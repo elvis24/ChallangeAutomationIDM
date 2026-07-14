@@ -2,102 +2,109 @@ Feature: sample karate test script
   for help, see: https://github.com/karatelabs/karate/wiki/IDE-Support
 
   Background:
-    * url 'https://jsonplaceholder.typicode.com'
+    * url 'https://serverest.dev/'
 
-  Scenario: obtener todos los usuarios y luego obtener el primer usuario por id
-    Given path 'users'
+  Scenario: obtener todos los usuarios
+    Given path 'usuarios'
     When method get
     Then status 200
 
-    * def first = response[0]
+   #####################################################
 
-    Given path 'users', first.id
-    When method get
-    Then status 200
-
-  Scenario: create a user and then get it by id
-    * def user =
-      """
-      {
-        "name": "Test User",
-        "username": "testuser",
-        "email": "test@user.com",
-        "address": {
-          "street": "Has No Name",
-          "suite": "Apt. 123",
-          "city": "Electri",
-          "zipcode": "54321-6789"
-        }
-      }
-      """
-
-    Given url 'https://jsonplaceholder.typicode.com/users'
-    And request user
-    When method post
-    Then status 201
-
-    * def id = response.id
-    * print 'created id is: ', id
-
-    Given path id
-    # When method get
-    # Then status 200
-    # And match response contains user
+  Scenario: obtener los usuarios por ID
+    Given path '/usuarios/0uxuPY0cbmQhpEz1'
+    When method GET
+    Then  status 200
 
 
-  Scenario: Crear usuario
-
-    Given path '/users'
+    ######################################################
+  Scenario: Crear nuevo usuario
+    Given path 'usuarios'
     And request
-"""
-{
- "name":"Juan",
- "email":"juan@test.com"
-}
-"""
-
-
+    """
+    {
+      "nome": "RONALDINHO",
+      "email": "mundial2006@qa.com",
+      "password": "teste",
+      "administrador": "true"
+    }
+    """
     When method POST
     Then status 201
-    And match response.name == "Juan"
 
+    #################################################################
 
+  Scenario: Actualizar usuario
 
-  Scenario: Usuario no existe
+    * def nuevo =
+    """
+    {
+      "nome": "Test Modificado",
+      "email": "juan123@test.com",
+      "password": "123456",
+      "administrador": "true"
+    }
+    """
 
-    Given path '/users/99999'
-    When method GET
-    Then status 404
-
-
-  Scenario: Actualizar usuario existente
-    Given path '/users/1'
-    And request
-"""
-{
-nombre:"Carlos",
-email:"carlos@test.com"
-}
-"""
+    Given path 'usuarios', 'lMLwmnoptFpFA8YK'
+    And request nuevo
     When method PUT
     Then status 200
-    And match response.nombre =="Carlos"
+    And match response.message == 'Registro alterado com sucesso'
 
+      ###########################################################
 
+  Scenario: Crear y eliminar usuario
 
-  Scenario: Actualizar usuario que no existente
-    Given path '/usuarios/99999'
-
-
+    Given path 'usuarios'
     And request
-"""
-{
-nombre:"Test"
-}
-"""
+    """
+    {
+      "nome": "Juan",
+      "email": "juan123w@test.com",
+      "password": "123456",
+      "administrador": "true"
+    }
+    """
+    When method POST
+    Then status 201
+
+    * def id = response._id
+
+    Given path 'usuarios', id
+    When method DELETE
+    Then status 200
+    * print response
+    And match response.message contains 'Registro excluído'
+
+############################## CASOS NEGATIVOS ######################################
+
+  Scenario: Consultar un usuario que no existe
+    Given path 'usuarios', 'lMLwmnoptFpFA8Y9'
+    When method GET
+    Then status 400
+    * print response.message
+    And match response.message == 'Usuário não encontrado'
+
+  Scenario: No permitir crear un usuario con email inválido
+
+    Given path 'usuarios'
+    And request
+    """
+    {
+      "nome": "Juan",
+      "email": "correo-invalido",
+      "password": "123456",
+      "administrador": "true"
+    }
+    """
+    When method POST
+    Then status 400
 
 
-    When method PUT
+  Scenario: Eliminar un usuario inexistente
 
-
-    Then status 404
+    Given path 'usuarios', 'idInexistente123'
+    When method DELETE
+    Then status 200
+    And match response.message == 'Nenhum registro excluído'

@@ -4,6 +4,8 @@ import { CustomWorld } from "./world";
 
 Before(async function (this: CustomWorld) {
 
+  console.log("Ejecutando Before Hook");
+
   this.browser = await chromium.launch({
     channel: "chrome",     // Usa Google Chrome
     headless: false,       // Muestra el navegador

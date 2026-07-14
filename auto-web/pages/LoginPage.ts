@@ -24,4 +24,10 @@ export class LoginPage {
 
   }
 
+  async validateLoginError() {
+
+  await expect(this.page.locator('[data-test="error"]'))
+    .toContainText('el usuario o contraseña no coinciden con ningun usuario');
+  }
+
 }

@@ -7,7 +7,7 @@ module.exports = {
             "features/**/*.feature"
         ],
         require: [
-            // "support/*.ts",
+            "support/*.ts",
             "features/step-definitions/*.ts"
         ],
 
