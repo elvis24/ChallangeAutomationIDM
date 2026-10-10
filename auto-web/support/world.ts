@@ -5,6 +5,12 @@ export class CustomWorld extends World {
   browser!: Browser;
   context!: BrowserContext;
   page!: Page;
+  scenarioName = "";
+  stepScreenshots: Array<{
+    text: string;
+    status: string;
+    screenshot?: Buffer;
+  }> = [];
 
   constructor(options: IWorldOptions) {
     super(options);

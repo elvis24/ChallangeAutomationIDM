@@ -11,8 +11,8 @@ Scenario: Completar una compra exitosamente
     And el usuario accede al carrito de compras
     And el usuario inicia el proceso de compra
     And el usuario completa sus datos personales con:
-        | nombre   | Juan    |
-        | apellido | Ronaldo |
-        | codigo   | 15001   |
+        | nombre   | Cristano   |
+        | apellido | Ronaldo    |
+        | codigo   | 15001      |
     And confirma la compra
     Then el usuario deberia ver el mensaje de confirmacion "Thank you for your order!"
